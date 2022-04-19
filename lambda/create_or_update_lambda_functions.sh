@@ -10,10 +10,11 @@ echo "LAMBDA_EXECUTION_ROLE_ARN:  ${LAMBDA_EXECUTION_ROLE_ARN}"
 echo "LAMBDA_ARCHITECTURE:        ${LAMBDA_ARCHITECTURE}"
 
 FUNCTION_ARNS=$(aws lambda list-functions | jq -r '.Functions[].FunctionArn')
+
 for p in "${@}"; do
   function_name="$(basename "${p%.*}")"
+  function_arn=$(echo "${FUNCTION_ARNS}" | grep -e ":${function_name}$" | head -1)
   zip --junk-paths "${function_name}.zip" "${p}"
-  function_arn=$(echo "${FUNCTION_ARNS}" | grep -e ":${function_name}$" | head -1 || echo '')
   if [[ -n "${function_arn}" ]]; then
     aws lambda update-function-code \
       --function-name "${function_arn}" --zip-file "fileb://${function_name}.zip"
@@ -23,4 +24,5 @@ for p in "${@}"; do
       --runtime "${LAMBDA_RUNTIME}" --handler "${function_name}.lambda_handler" \
       --role "${LAMBDA_EXECUTION_ROLE_ARN}" --architectures "${LAMBDA_ARCHITECTURE}"
   fi
+  rm "${function_name}.zip"
 done
