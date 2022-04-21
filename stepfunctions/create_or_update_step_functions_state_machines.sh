@@ -11,7 +11,7 @@ STATE_MACHINE_ARNS=$(aws stepfunctions list-state-machines | jq -r '.stateMachin
 
 for p in "${@}"; do
   state_machine_name="$(basename "${p%.asl.yml}")"
-  state_machine_arn=$(echo "${STATE_MACHINE_ARNS}" | grep -e ":${state_machine_name}$" | head -1)
+  state_machine_arn=$(echo "${STATE_MACHINE_ARNS}" | grep -e ":${state_machine_name}$" | head -1 || :)
   ruby -rjson -ryaml -e 'print JSON.pretty_generate(YAML.load(STDIN.read))' \
     < "${p}" | tee "${state_machine_name}.asl.json"
   if [[ -n "${state_machine_arn}" ]]; then

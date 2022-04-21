@@ -13,7 +13,7 @@ FUNCTION_ARNS=$(aws lambda list-functions | jq -r '.Functions[].FunctionArn')
 
 for p in "${@}"; do
   function_name="$(basename "${p%.*}")"
-  function_arn=$(echo "${FUNCTION_ARNS}" | grep -e ":${function_name}$" | head -1)
+  function_arn=$(echo "${FUNCTION_ARNS}" | grep -e ":${function_name}$" | head -1 || :)
   zip --junk-paths "${function_name}.zip" "${p}"
   if [[ -n "${function_arn}" ]]; then
     aws lambda update-function-code \
