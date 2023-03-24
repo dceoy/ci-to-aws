@@ -31,6 +31,9 @@
         "value": "512"
       }
     ],
+    "ephemeralStorage": {
+      "sizeInGiB": 200
+    },
     "networkConfiguration": {
       "assignPublicIp": "DISABLED"
     },

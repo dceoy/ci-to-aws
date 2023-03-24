@@ -4,10 +4,10 @@
 
 set -euox pipefail
 
-echo "ARGV:                       ${*}"
-echo "IMAGE_TAG:                  ${IMAGE_TAG}"
-echo "BATCH_JOB_ROLE_ARN:         ${BATCH_JOB_ROLE_ARN}"
-echo "BATCH_EXECUTION_ROLE_ARN:   ${BATCH_EXECUTION_ROLE_ARN}"
+echo "ARGV:                           ${*}"
+echo "IMAGE_TAG:                      ${IMAGE_TAG}"
+echo "BATCH_JOB_ROLE_ARN:             ${BATCH_JOB_ROLE_ARN}"
+echo "BATCH_JOB_EXECUTION_ROLE_ARN:   ${BATCH_JOB_EXECUTION_ROLE_ARN}"
 
 AWS_ACCOUNT_ID="$(aws sts get-caller-identity | jq -r '.Account')"
 AWS_REGION="$(aws configure get region)"
@@ -21,7 +21,7 @@ for i in "${@}"; do
       && jq ".jobDefinitionName=\"${p}-${i}\"" < "${j2_json_path}" \
         | jq ".containerProperties.image=\"${ECR_REGISTRY}/${i}:${IMAGE_TAG}\"" \
         | jq ".containerProperties.jobRoleArn=\"${BATCH_JOB_ROLE_ARN}\"" \
-        | jq ".containerProperties.executionRoleArn=\"${BATCH_EXECUTION_ROLE_ARN}\"" \
+        | jq ".containerProperties.executionRoleArn=\"${BATCH_JOB_EXECUTION_ROLE_ARN}\"" \
         | tee "${i}.${p}.job-definition.json"
     aws batch register-job-definition \
       --cli-input-json "file://${i}.${p}.job-definition.json"
