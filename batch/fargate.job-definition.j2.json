@@ -41,6 +41,9 @@
       "platformVersion": "LATEST"
     }
   },
+  "ephemeralStorage": {
+    "sizeInGiB": 200
+  },
   "retryStrategy": {
     "attempts": 5,
     "evaluateOnExit": [
