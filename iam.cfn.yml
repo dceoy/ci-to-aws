@@ -104,3 +104,8 @@ Resources:
                   StringEqualsIfExists:
                     iam:PassedToService:
                       - states.amazonaws.com
+Outputs:
+  CiGroup:
+    Value: !Ref CiGroup
+    Export:
+      Name: !Sub ${AWS::Region}-${AWS::StackName}-CiGroup
